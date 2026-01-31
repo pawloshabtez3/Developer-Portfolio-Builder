@@ -3,6 +3,10 @@ export type Profile = {
   username: string;
   role: string;
   bio: string;
+  linkedIn?: string;
+  github?: string;
+  portfolio?: string;
+  location?: string;
   completion?: number;
 };
 

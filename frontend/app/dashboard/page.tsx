@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ProgressBar from "../components/ProgressBar";
-import { apiFetch } from "../lib/api";
+import { apiFetch, generateResume } from "../lib/api";
 import type { Experience, Profile, Project } from "../lib/types";
 
 export default function DashboardPage() {
@@ -18,13 +18,18 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
 
-  const [profileForm, setProfileForm] = useState({
+const [profileForm, setProfileForm] = useState({
     name: "",
     username: "",
     role: "",
     bio: "",
+    linkedIn: "",
+    github: "",
+    portfolio: "",
+    location: "",
   });
   const [profileSaving, setProfileSaving] = useState(false);
+  const [resumeGenerating, setResumeGenerating] = useState(false);
 
   const [newSkill, setNewSkill] = useState("");
   const [skillsSaving, setSkillsSaving] = useState(false);
@@ -61,12 +66,16 @@ export default function DashboardPage() {
             apiFetch<Project[]>("/api/projects"),
             apiFetch<Experience[]>("/api/experience"),
           ]);
-        setProfile(profileData);
+setProfile(profileData);
         setProfileForm({
           name: profileData.name || "",
           username: profileData.username || "",
           role: profileData.role || "",
           bio: profileData.bio || "",
+          linkedIn: profileData.linkedIn || "",
+          github: profileData.github || "",
+          portfolio: profileData.portfolio || "",
+          location: profileData.location || "",
         });
         setSkills(skillsData || []);
         setProjects(projectsData || []);
@@ -98,7 +107,7 @@ export default function DashboardPage() {
     }
   };
 
-  const handleProfileSave = async () => {
+const handleProfileSave = async () => {
     setProfileSaving(true);
     setError(null);
     try {
@@ -111,6 +120,27 @@ export default function DashboardPage() {
       setError(err instanceof Error ? err.message : "Failed to update profile");
     } finally {
       setProfileSaving(false);
+    }
+  };
+
+  const handleGenerateResume = async () => {
+    setResumeGenerating(true);
+    setError(null);
+    try {
+      const blob = await generateResume();
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${profile?.name?.replace(/\s+/g, "_") || "Resume"}_Resume.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to generate resume");
+    } finally {
+      setResumeGenerating(false);
     }
   };
 
@@ -378,7 +408,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
+<div className="mt-6 grid gap-4 md:grid-cols-2">
             <input
               value={profileForm.name}
               onChange={(event) =>
@@ -413,6 +443,17 @@ export default function DashboardPage() {
               className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
             />
             <input
+              value={profileForm.location}
+              onChange={(event) =>
+                setProfileForm((prev) => ({
+                  ...prev,
+                  location: event.target.value,
+                }))
+              }
+              placeholder="Location (e.g., San Francisco, CA)"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            />
+            <textarea
               value={profileForm.bio}
               onChange={(event) =>
                 setProfileForm((prev) => ({
@@ -421,18 +462,82 @@ export default function DashboardPage() {
                 }))
               }
               placeholder="Bio"
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm md:col-span-2 min-h-[80px]"
             />
           </div>
 
-          <button
-            onClick={handleProfileSave}
-            disabled={profileSaving}
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
-          >
-            {profileSaving ? <Spinner size={14} /> : null}
-            Save profile
-          </button>
+          <div className="mt-4">
+            <h3 className="text-sm font-medium text-slate-700 mb-3">Contact & Social Links</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <input
+                value={profileForm.linkedIn}
+                onChange={(event) =>
+                  setProfileForm((prev) => ({
+                    ...prev,
+                    linkedIn: event.target.value,
+                  }))
+                }
+                placeholder="LinkedIn URL"
+                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+              <input
+                value={profileForm.github}
+                onChange={(event) =>
+                  setProfileForm((prev) => ({
+                    ...prev,
+                    github: event.target.value,
+                  }))
+                }
+                placeholder="GitHub URL"
+                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+              <input
+                value={profileForm.portfolio}
+                onChange={(event) =>
+                  setProfileForm((prev) => ({
+                    ...prev,
+                    portfolio: event.target.value,
+                  }))
+                }
+                placeholder="Portfolio URL"
+                className="rounded-lg border border-slate-200 px-3 py-2 text-sm md:col-span-2"
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              onClick={handleProfileSave}
+              disabled={profileSaving}
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
+            >
+              {profileSaving ? <Spinner size={14} /> : null}
+              Save profile
+            </button>
+
+            <button
+              onClick={handleGenerateResume}
+              disabled={resumeGenerating || completion < 70}
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold ${
+                completion >= 70
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-slate-200 text-slate-400 cursor-not-allowed"
+              }`}
+              title={
+                completion < 70
+                  ? `Profile must be at least 70% complete (currently ${completion}%)`
+                  : "Generate AI-powered resume"
+              }
+            >
+              {resumeGenerating ? <Spinner size={14} /> : null}
+              {resumeGenerating ? "Generating..." : "Generate Resume"}
+            </button>
+            {completion < 70 && (
+              <span className="text-xs text-slate-500 self-center">
+                Complete {70 - completion}% more to generate resume
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
@@ -530,7 +635,6 @@ export default function DashboardPage() {
                 placeholder="Live URL"
                 className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
               />
-              <input
               <select
                 value={projectForm.visibility}
                 onChange={(event) =>

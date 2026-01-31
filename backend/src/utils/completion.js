@@ -2,11 +2,16 @@ const calculateCompletion = (user) => {
   let total = 0;
   let filled = 0;
 
+  // Profile fields (including new contact fields)
   const fields = [
     user.name,
     user.username,
     user.role,
     user.bio,
+    user.linkedIn,
+    user.github,
+    user.portfolio,
+    user.location,
   ];
 
   total += fields.length;
