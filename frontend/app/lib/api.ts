@@ -31,3 +31,27 @@ export async function apiFetch<T>(
 
   return payload?.data as T;
 }
+
+/**
+ * Generate and download resume PDF
+ * Returns a Blob that can be used to trigger a download
+ */
+export async function generateResume(): Promise<Blob> {
+  if (!API_URL) {
+    throw new Error("NEXT_PUBLIC_API_URL is not set");
+  }
+
+  const res = await fetch(`${API_URL}/api/resume/generate`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    // Try to parse error message
+    const errorPayload = await res.json().catch(() => null);
+    const message = errorPayload?.error?.message || "Failed to generate resume";
+    throw new Error(message);
+  }
+
+  return await res.blob();
+}

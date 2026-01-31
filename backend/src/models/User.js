@@ -34,6 +34,11 @@ const UserSchema = new mongoose.Schema(
     bio: { type: String, trim: true },
     email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true },
+    // Contact fields for resume
+    linkedIn: { type: String, trim: true },
+    github: { type: String, trim: true },
+    portfolio: { type: String, trim: true },
+    location: { type: String, trim: true },
     skills: { type: [String], default: [] },
     projects: { type: [ProjectSchema], default: [] },
     experience: { type: [ExperienceSchema], default: [] },

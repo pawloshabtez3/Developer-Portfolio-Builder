@@ -11,6 +11,10 @@ const profileSchema = z.object({
   username: z.string().min(3),
   role: z.string().min(1),
   bio: z.string().min(1),
+  linkedIn: z.string().optional().or(z.literal("")),
+  github: z.string().optional().or(z.literal("")),
+  portfolio: z.string().optional().or(z.literal("")),
+  location: z.string().optional().or(z.literal("")),
 });
 
 router.get("/", auth, getProfile);
