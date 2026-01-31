@@ -1,6 +1,13 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+let ai = null;
+
+const getAI = () => {
+  if (!ai) {
+    ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  }
+  return ai;
+};
 
 /**
  * Enhances user resume content using Gemini AI
@@ -8,8 +15,6 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
  * @returns {Promise<Object>} Enhanced content for resume
  */
 const enhanceResumeContent = async (userData) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
   const prompt = `You are a professional resume writer. Given the following user data, enhance and rewrite the content to be professional, impactful, and suitable for a resume that will pass ATS (Applicant Tracking Systems).
 
 USER DATA:
@@ -70,9 +75,11 @@ Rules:
 6. Return ONLY valid JSON, no other text`;
 
   try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const response = await getAI().models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+    const text = response.text;
 
     // Clean the response - remove markdown code blocks if present
     let cleanedText = text.trim();
