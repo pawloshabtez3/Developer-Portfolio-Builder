@@ -14,13 +14,17 @@ const getPublicPortfolio = asyncHandler(async (req, res) => {
 
   const experience = [...user.experience].sort((a, b) => a.order - b.order);
 
-  res.json({
+res.json({
     data: {
       profile: {
         name: user.name,
         username: user.username,
         role: user.role,
         bio: user.bio,
+        linkedIn: user.linkedIn,
+        github: user.github,
+        portfolio: user.portfolio,
+        location: user.location,
       },
       skills: user.skills,
       projects,

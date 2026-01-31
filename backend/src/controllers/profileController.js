@@ -17,13 +17,17 @@ const getProfile = asyncHandler(async (req, res) => {
       username: user.username,
       role: user.role,
       bio: user.bio,
+      linkedIn: user.linkedIn,
+      github: user.github,
+      portfolio: user.portfolio,
+      location: user.location,
       completion,
     },
   });
 });
 
 const updateProfile = asyncHandler(async (req, res) => {
-  const { name, username, role, bio } = req.body;
+  const { name, username, role, bio, linkedIn, github, portfolio, location } = req.body;
 
   const existingUsername = await User.findOne({
     username,
@@ -35,7 +39,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 
   const user = await User.findByIdAndUpdate(
     req.user.id,
-    { name, username, role, bio },
+    { name, username, role, bio, linkedIn, github, portfolio, location },
     { new: true }
   );
 
@@ -51,6 +55,10 @@ const updateProfile = asyncHandler(async (req, res) => {
       username: user.username,
       role: user.role,
       bio: user.bio,
+      linkedIn: user.linkedIn,
+      github: user.github,
+      portfolio: user.portfolio,
+      location: user.location,
       completion,
     },
   });

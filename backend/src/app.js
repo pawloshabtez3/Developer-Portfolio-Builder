@@ -10,6 +10,7 @@ const skillsRoutes = require("./routes/skillsRoutes");
 const projectsRoutes = require("./routes/projectsRoutes");
 const experienceRoutes = require("./routes/experienceRoutes");
 const publicRoutes = require("./routes/publicRoutes");
+const resumeRoutes = require("./routes/resumeRoutes");
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/skills", skillsRoutes);
 app.use("/api/projects", projectsRoutes);
 app.use("/api/experience", experienceRoutes);
 app.use("/api/public", publicRoutes);
+app.use("/api/resume", resumeRoutes);
 
 app.use((req, res, next) => {
   next(new AppError("Route not found", 404));
