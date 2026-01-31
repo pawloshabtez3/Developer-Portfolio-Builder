@@ -26,7 +26,6 @@ const createProject = asyncHandler(async (req, res) => {
   const payload = {
     ...req.body,
     liveUrl: req.body.liveUrl || undefined,
-    githubUrl: req.body.githubUrl || undefined,
     order: maxOrder + 1,
   };
 
@@ -51,7 +50,6 @@ const updateProject = asyncHandler(async (req, res) => {
   const payload = {
     ...req.body,
     liveUrl: req.body.liveUrl || undefined,
-    githubUrl: req.body.githubUrl || undefined,
   };
 
   Object.assign(project, payload);

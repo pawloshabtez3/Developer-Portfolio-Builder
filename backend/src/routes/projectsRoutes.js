@@ -18,7 +18,6 @@ const projectSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   liveUrl: urlField,
-  githubUrl: urlField,
   visibility: z.enum(["public", "private"]),
 });
 

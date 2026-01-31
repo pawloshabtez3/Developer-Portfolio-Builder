@@ -14,7 +14,6 @@ type PublicPortfolio = {
     title: string;
     description: string;
     liveUrl?: string;
-    githubUrl?: string;
   }>;
   experience: Array<{
     _id: string;
@@ -133,16 +132,6 @@ export default async function PublicPortfolioPage({
                         className="text-slate-900"
                       >
                         Live site
-                      </a>
-                    ) : null}
-                    {project.githubUrl ? (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-slate-900"
-                      >
-                        GitHub
                       </a>
                     ) : null}
                   </div>

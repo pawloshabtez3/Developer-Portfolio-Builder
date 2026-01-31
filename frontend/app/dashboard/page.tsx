@@ -33,7 +33,6 @@ export default function DashboardPage() {
     title: "",
     description: "",
     liveUrl: "",
-    githubUrl: "",
     visibility: "public" as "public" | "private",
   });
   const [projectEditingId, setProjectEditingId] = useState<string | null>(null);
@@ -143,7 +142,6 @@ export default function DashboardPage() {
       title: "",
       description: "",
       liveUrl: "",
-      githubUrl: "",
       visibility: "public",
     });
     setProjectEditingId(null);
@@ -181,7 +179,6 @@ export default function DashboardPage() {
       title: project.title,
       description: project.description,
       liveUrl: project.liveUrl || "",
-      githubUrl: project.githubUrl || "",
       visibility: project.visibility,
     });
   };
@@ -534,16 +531,6 @@ export default function DashboardPage() {
                 className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
               />
               <input
-                value={projectForm.githubUrl}
-                onChange={(event) =>
-                  setProjectForm((prev) => ({
-                    ...prev,
-                    githubUrl: event.target.value,
-                  }))
-                }
-                placeholder="GitHub URL"
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-              />
               <select
                 value={projectForm.visibility}
                 onChange={(event) =>

@@ -11,7 +11,6 @@ export type Project = {
   title: string;
   description: string;
   liveUrl?: string;
-  githubUrl?: string;
   visibility: "public" | "private";
   order: number;
 };

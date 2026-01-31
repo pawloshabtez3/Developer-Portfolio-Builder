@@ -6,6 +6,7 @@ const connectDb = async () => {
     throw new Error("MONGO_URI is not set");
   }
   await mongoose.connect(mongoUri);
+  console.log("MongoDB connected");
 };
 
 module.exports = { connectDb };
