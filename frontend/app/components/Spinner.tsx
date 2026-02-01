@@ -1,7 +1,7 @@
 export default function Spinner({ size = 20 }: { size?: number }) {
   return (
     <span
-      className="inline-block animate-spin rounded-full border-2 border-slate-300 border-t-slate-900"
+      className="spinner"
       style={{ width: size, height: size }}
       aria-label="Loading"
     />
