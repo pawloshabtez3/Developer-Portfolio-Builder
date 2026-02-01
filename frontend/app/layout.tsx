@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Developer Portfolio Builder",
+  title: "LiveResume",
   description:
-    "Create a professional developer portfolio with a secure dashboard.",
+    "Build a polished resume and portfolio with a secure, AI-powered dashboard.",
 };
 
 export default function RootLayout({

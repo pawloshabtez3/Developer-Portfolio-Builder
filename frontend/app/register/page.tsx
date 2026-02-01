@@ -104,7 +104,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white disabled:opacity-70"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-sky-400 px-4 py-3 text-sm font-semibold text-black disabled:opacity-70"
           >
             {loading ? <Spinner size={16} /> : null}
             Create account
@@ -113,7 +113,7 @@ export default function RegisterPage() {
 
         <p className="text-sm text-slate-500">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-slate-900">
+          <Link href="/login" className="font-medium text-black">
             Sign in
           </Link>
         </p>
