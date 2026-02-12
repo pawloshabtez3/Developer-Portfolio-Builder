@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { apiFetch } from "./lib/api";
+import { apiFetch, clearAuthToken } from "./lib/api";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -37,6 +37,7 @@ export default function Home() {
     try {
       await apiFetch("/api/auth/logout", { method: "POST" });
     } finally {
+      clearAuthToken();
       setIsLoggedIn(false);
     }
   };

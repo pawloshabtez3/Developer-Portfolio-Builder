@@ -2,7 +2,13 @@ const jwt = require("jsonwebtoken");
 const { AppError } = require("../utils/appError");
 
 const auth = (req, res, next) => {
-  const token = req.cookies?.token;
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  let token = req.cookies?.token;
+
+  if (!token && typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
+    token = authHeader.slice(7).trim();
+  }
+
   if (!token) {
     return next(new AppError("Authentication required", 401));
   }

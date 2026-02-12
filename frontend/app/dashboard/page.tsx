@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ProgressBar from "../components/ProgressBar";
-import { apiFetch, generateResume } from "../lib/api";
+import { apiFetch, clearAuthToken, generateResume } from "../lib/api";
 import type { Experience, Profile, Project } from "../lib/types";
 
 export default function DashboardPage() {
@@ -103,6 +103,7 @@ export default function DashboardPage() {
     try {
       await apiFetch("/api/auth/logout", { method: "POST" });
     } finally {
+      clearAuthToken();
       router.push("/login");
     }
   };

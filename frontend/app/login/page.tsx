@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "../components/Spinner";
-import { apiFetch } from "../lib/api";
+import { apiFetch, setAuthToken } from "../lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,10 +25,13 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      await apiFetch("/api/auth/login", {
+      const data = await apiFetch<{ token?: string }>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
+      if (data?.token) {
+        setAuthToken(data.token);
+      }
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

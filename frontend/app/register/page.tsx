@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "../components/Spinner";
-import { apiFetch } from "../lib/api";
+import { apiFetch, setAuthToken } from "../lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,10 +32,13 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      await apiFetch("/api/auth/register", {
+      const data = await apiFetch<{ token?: string }>("/api/auth/register", {
         method: "POST",
         body: JSON.stringify({ name, username, email, password }),
       });
+      if (data?.token) {
+        setAuthToken(data.token);
+      }
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
