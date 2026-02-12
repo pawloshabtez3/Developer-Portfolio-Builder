@@ -29,10 +29,22 @@ const ExperienceSchema = new mongoose.Schema(
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, trim: true },
-    username: { type: String, required: true, unique: true, trim: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
     role: { type: String, trim: true },
     bio: { type: String, trim: true },
-    email: { type: String, required: true, unique: true, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
     password: { type: String, required: true },
     // Contact fields for resume
     linkedIn: { type: String, trim: true },

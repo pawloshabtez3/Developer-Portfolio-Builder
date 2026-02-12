@@ -9,6 +9,9 @@ const signToken = (userId) =>
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   });
 
+const normalizeEmail = (value = "") => value.trim().toLowerCase();
+const normalizeUsername = (value = "") => value.trim().toLowerCase();
+
 const setAuthCookie = (res, token) => {
   const isProduction = process.env.NODE_ENV === "production";
 
@@ -22,13 +25,15 @@ const setAuthCookie = (res, token) => {
 
 const register = asyncHandler(async (req, res) => {
   const { name, username, email, password } = req.body;
+  const normalizedEmail = normalizeEmail(email);
+  const normalizedUsername = normalizeUsername(username);
 
-  const existingEmail = await User.findOne({ email });
+  const existingEmail = await User.findOne({ email: normalizedEmail });
   if (existingEmail) {
     throw new AppError("Email already in use", 400);
   }
 
-  const existingUsername = await User.findOne({ username });
+  const existingUsername = await User.findOne({ username: normalizedUsername });
   if (existingUsername) {
     throw new AppError("Username already in use", 400);
   }
@@ -37,8 +42,8 @@ const register = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     name,
-    username,
-    email,
+    username: normalizedUsername,
+    email: normalizedEmail,
     password: hashedPassword,
   });
 
@@ -57,13 +62,27 @@ const register = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  const normalizedEmail = normalizeEmail(email);
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: normalizedEmail });
   if (!user) {
     throw new AppError("Invalid credentials", 401);
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isBcryptHash =
+    typeof user.password === "string" && user.password.startsWith("$2");
+
+  let isMatch = false;
+  if (isBcryptHash) {
+    isMatch = await bcrypt.compare(password, user.password);
+  } else {
+    isMatch = password === user.password;
+    if (isMatch) {
+      user.password = await bcrypt.hash(password, 10);
+      await user.save();
+    }
+  }
+
   if (!isMatch) {
     throw new AppError("Invalid credentials", 401);
   }
